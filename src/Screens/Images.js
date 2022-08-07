@@ -18,6 +18,10 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 const Images = ({route}) => {
   const navigation = useNavigation();
   let imageList = route.params;
+  if(imageList.imageList.length > 30){
+    imageList.imageList.splice(30, imageList.imageList.length );
+  }
+  const [image, setImage] =useState(imageList)
   const [index, setIndex] = useState(0);
   const [refresh, setRefresh] = useState(false);
 
@@ -28,13 +32,13 @@ const Images = ({route}) => {
   function Delete() {
     setRefresh(prevRefresh => !prevRefresh);
     if (index > 1) {
-      imageList.imageList.splice(index, index + 1);
+      image.imageList.splice(index, index + 1);
       setIndex(index - 1);
-    } else if (index === 0 && imageList.imageList.length > 1) {
-      imageList.imageList.splice(index, index + 1);
+    } else if (index === 0 && image.imageList.length > 1) {
+      image.imageList.splice(index, index + 1);
       setIndex(index);
     }
-    else if (imageList.imageList.length === 1) {
+    else if (image.imageList.length === 1) {
       Alert.alert(
         'Last Picture',
         'If you delete it,\nIt will take you to the Home',
@@ -66,7 +70,7 @@ const Images = ({route}) => {
           <Image
             style={styles.mainImage}
             source={{
-              uri: imageList.imageList[index].path,
+              uri: image.imageList[index].path,
             }}
           />
         ) : (
@@ -103,7 +107,8 @@ const Images = ({route}) => {
               alwaysBounceHorizontal
               horizontal
               extraData={refresh}
-              data={imageList.imageList}
+              data={image.imageList}
+
               renderItem={({item, index, drag}) => (
                 <TouchableOpacity
                   onLongPress={drag}
@@ -119,6 +124,7 @@ const Images = ({route}) => {
                 </TouchableOpacity>
               )}
               keyExtractor={(item, index) => index.toString()}
+              onDragEnd={({ data }) => setImage({"imageList": data} )}
             />
           </GestureHandlerRootView>
         </View>

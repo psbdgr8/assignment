@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import UnityView from 'react-native-unity-play';
 import {LogBox} from "react-native";
 import { Icon } from 'react-native-elements'
+import ImagePicker from 'react-native-image-crop-picker';
 
 LogBox.ignoreLogs([
 "ViewPropTypes will be removed",
@@ -16,29 +17,29 @@ const HomeScreen = () => {
   const [image, setImage] = useState({});
   const [visible, setVisible] = useState(false)
 
-  const chooseImage = useCallback(() => {
-    const options = {
-      selectionLimit: 30,
-      mediaType: 'photo',
-      includeBase64: false,
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    launchImageLibrary(options, response => {
-      console.log('Response = ', response);
+ const openImagePicker = () => {
+  let imageList = [];
+  ImagePicker.openPicker({
+    multiple: true,
+    waitAnimationEnd: false,
+    includeExif: true,
+    forceJpg: true,
+    compressImageQuality: 0.8,
+    maxFiles: 30,
+    mediaType:'photo',
+    includeBase64: true
+  }).then(response => {
+    console.log('Response',response);
+    response.map(image => {
+      imageList.push({
+        filename: image.filename,
+        path: image.path,
+        data: image.data
+      })
+    })
+  }).catch(e => console.log("Error",e.message)); 
+ };
 
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image Picker Error: ', response.error);
-      } else {
-        let source = {uri: response.uri};
-        setImage(response.assets)
-      }
-    });
-  }, []);
 
 if(visible){
   return(
@@ -61,7 +62,7 @@ if(visible){
       <TouchableOpacity onPress={() => setVisible(true)} style={styles.button}>
         <Text style={styles.text}>Launch Unity</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={chooseImage} style={styles.button}>
+      <TouchableOpacity onPress={openImagePicker} style={styles.button}>
         <Text style={styles.text}>Select Photos</Text>
       </TouchableOpacity>
     </View>

@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName='Image'>
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -21,7 +21,10 @@ const App = () => {
         />
         <Stack.Screen
         name='Image'
-        component={Images}/>
+        component={Images}
+        options={{
+          headerShown: false,
+        }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -5,7 +5,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './Screens/HomeScreen';
 import Images from './Screens/Images';
-import Unity from './Screens/Unity';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,12 +22,6 @@ const App = () => {
         <Stack.Screen
         name='Image'
         component={Images}/>
-        <Stack.Screen
-        name='Unity'
-        options={{
-    headerShown:false
-        }}
-        component={Unity}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -2,10 +2,19 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import UnityView from 'react-native-unity-play';
+import {LogBox} from "react-native";
+import { Icon } from 'react-native-elements'
+
+LogBox.ignoreLogs([
+"ViewPropTypes will be removed",
+"ColorPropType will be removed",
+])
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState({});
+  const [visible, setVisible] = useState(false)
 
   const chooseImage = useCallback(() => {
     const options = {
@@ -26,17 +35,30 @@ const HomeScreen = () => {
         console.log('Image Picker Error: ', response.error);
       } else {
         let source = {uri: response.uri};
-        setImage(response)
+        setImage(response.assets)
       }
     });
   }, []);
-  function Unity(){
-navigation.navigate('Unity');
-  }
 
+if(visible){
+  return(
+    <View style={{flex: 1}}>
+      <UnityView style={{ position: 'absolute', left: 0, right: 0, top: 1, bottom: 1 }} />
+      <TouchableOpacity
+        onPress={() => setVisible(false)}
+        style={{
+          position: 'absolute',
+          top: 30,
+          left: 20,
+        }}>
+        <Icon name='arrow-back-ios'/>
+      </TouchableOpacity>
+    </View>
+  )
+}
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={Unity} style={styles.button}>
+      <TouchableOpacity onPress={() => setVisible(true)} style={styles.button}>
         <Text style={styles.text}>Launch Unity</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={chooseImage} style={styles.button}>

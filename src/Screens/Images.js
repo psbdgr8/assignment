@@ -1,31 +1,38 @@
 import {
+  FlatList,
   Image,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Icon} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 
-const Images = () => {
+const Images = ({route}) => {
   const navigation = useNavigation();
+  const imageList = route.params;
+  const [list, setList] = useState();
+  const [selectedImage, setSelectedImage] = useState();
+  const [index, setIndex] = useState(1);
+  console.log(imageList.length)
+
   function Home() {
-    navigation.navigate('Home');
+    navigation.replace('Home');
   }
+
   return (
     <View style={styles.container}>
-    <StatusBar barStyle={'dark-content'} />
-      <View style={{flex:0.8, marginTop: 50}}>
-      <Image
-        style={styles.tinyLogo}
-        source={{
-          uri: 'https://reactnative.dev/img/tiny_logo.png',
-        }}
-      />
+      <StatusBar barStyle={'dark-content'} />
+      <View style={{flex: 0.8, marginTop: 50}}>
+        <Image
+          style={styles.mainImage}
+          source={{
+            uri: 'https://reactnative.dev/img/tiny_logo.png',
+          }}
+        />
       </View>
       <View style={styles.topIconView}>
         <TouchableOpacity onPress={Home}>
@@ -43,48 +50,12 @@ const Images = () => {
         <View style={styles.bottomBar}>
           <Icon name="add-circle" iconStyle={styles.bottomIcon} />
           <View style={styles.textField}>
-            <Text style={styles.text}>Sample</Text>
+            <Text style={styles.text}>Image{index}</Text>
           </View>
           <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
         </View>
         <View style={styles.bottomBar2}>
-          <ScrollView horizontal>
-            <Icon name="add-circle" iconStyle={styles.bottomIcon} />
-            <View style={styles.textField}>
-              <Text style={styles.text}>Sample</Text>
-            </View>
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-            <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
-          </ScrollView>
+          <FlatList horizontal data={imageList} />
         </View>
       </View>
     </View>
@@ -138,6 +109,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     paddingLeft: 10,
+    marginTop: 2,
   },
   text: {
     fontSize: 20,
@@ -149,10 +121,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     flexDirection: 'row',
   },
-  tinyLogo: {
-    width: "90%",
-    height: "90%",
-    alignSelf:'center',
-    resizeMode:'contain'
+  mainImage: {
+    width: '90%',
+    height: '90%',
+    alignSelf: 'center',
+    resizeMode: 'contain',
   },
 });

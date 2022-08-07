@@ -37,7 +37,10 @@ const HomeScreen = () => {
       })
       setImage(imageList)
     })
-  }).catch(e => console.log("Error",e.message)); 
+  }).then(() => {
+    navigation.navigate('Image', {imageList: imageList} )
+  })
+  .catch(e => console.log("Error",e.message)); 
  };
 
 if(visible){

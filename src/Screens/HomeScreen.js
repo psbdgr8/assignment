@@ -1,4 +1,4 @@
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text, ActivityIndicator} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
@@ -16,8 +16,10 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState({});
   const [visible, setVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
 
  const openImagePicker = () => {
+  setLoading(true)
   let imageList = [];
   ImagePicker.openPicker({
     multiple: true,
@@ -38,11 +40,20 @@ const HomeScreen = () => {
       setImage(imageList)
     })
   }).then(() => {
-    navigation.navigate('Image', {imageList: imageList} )
+    navigation.navigate('Image', {imageList: imageList});
+    setLoading(false);
   })
-  .catch(e => console.log("Error",e.message)); 
+  .catch(e => {console.log("Error",e.message);
+  setLoading(false);}); 
  };
 
+ if (loading) {
+  return (
+    <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
+      <ActivityIndicator color={'gray'} size="large" />
+    </View>
+  );
+}
 if(visible){
   return(
     <View style={{flex: 1}}>

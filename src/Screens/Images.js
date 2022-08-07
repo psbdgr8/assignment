@@ -1,44 +1,83 @@
 import {
+  Alert,
   FlatList,
   Image,
+  ImageBackground,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Icon} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const Images = ({route}) => {
   const navigation = useNavigation();
-  const imageList = route.params;
-  const [list, setList] = useState();
-  const [selectedImage, setSelectedImage] = useState();
-  const [index, setIndex] = useState(1);
-  console.log(imageList.length)
+  let imageList = route.params;
+  const [index, setIndex] = useState(0);
+  const [refresh, setRefresh] = useState(false);
 
   function Home() {
     navigation.replace('Home');
   }
 
+  function Delete() {
+    setRefresh(prevRefresh => !prevRefresh);
+    if (index > 1) {
+      imageList.imageList.splice(index, index + 1);
+      setIndex(index - 1);
+    } else if (index === 0 && imageList.imageList.length > 1) {
+      imageList.imageList.splice(index, index + 1);
+      setIndex(index);
+    }
+    else if (imageList.imageList.length === 1) {
+      Alert.alert(
+        'Last Picture',
+        'If you delete it,\nIt will take you to the Home',
+        [
+          {
+            text: 'No',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          {text: 'Yes', onPress: Home},
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => null,
+        },
+      );
+    }
+  }
+
+  function refresher() {
+    setRefresh(prevRefresh => !prevRefresh);
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'dark-content'} />
-      <View style={{flex: 0.8, marginTop: 50}}>
-        <Image
-          style={styles.mainImage}
-          source={{
-            uri: 'https://reactnative.dev/img/tiny_logo.png',
-          }}
-        />
+      <View style={{flex: 0.8, marginTop: 50, justifyContent: 'center'}}>
+        {index >= 0 ? (
+          <Image
+            style={styles.mainImage}
+            source={{
+              uri: imageList.imageList[index].path,
+            }}
+          />
+        ) : (
+          <Text style={styles.noImage}>No Image</Text>
+        )}
       </View>
       <View style={styles.topIconView}>
         <TouchableOpacity onPress={Home}>
           <Icon name="clear" iconStyle={styles.iconTop} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={Delete}>
           <Icon
             name="trash-can-outline"
             type="material-community"
@@ -50,12 +89,38 @@ const Images = ({route}) => {
         <View style={styles.bottomBar}>
           <Icon name="add-circle" iconStyle={styles.bottomIcon} />
           <View style={styles.textField}>
-            <Text style={styles.text}>Image{index}</Text>
+            {index > -1 ? (
+              <Text style={styles.text}>Image{index + 1}</Text>
+            ) : (
+              <Text style={styles.text}>No Image</Text>
+            )}
           </View>
           <Icon name="cloud-upload" iconStyle={styles.bottomIcon} />
         </View>
         <View style={styles.bottomBar2}>
-          <FlatList horizontal data={imageList} />
+          <GestureHandlerRootView>
+            <DraggableFlatList
+              alwaysBounceHorizontal
+              horizontal
+              extraData={refresh}
+              data={imageList.imageList}
+              renderItem={({item, index, drag}) => (
+                <TouchableOpacity
+                  onLongPress={drag}
+                  key={index}
+                  onPress={() => setIndex(index)}>
+                  <ImageBackground
+                    style={styles.bottomImage}
+                    source={{
+                      uri: item.path,
+                    }}>
+                    <Text style={styles.imageNum}>{index + 1}</Text>
+                  </ImageBackground>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </GestureHandlerRootView>
         </View>
       </View>
     </View>
@@ -89,7 +154,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     backgroundColor: 'black',
-    flex: 0.3,
+    flex: 0.2,
   },
   bottomIcon: {
     color: '#2272b5',
@@ -109,7 +174,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     paddingLeft: 10,
-    marginTop: 2,
   },
   text: {
     fontSize: 20,
@@ -122,9 +186,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   mainImage: {
-    width: '90%',
-    height: '90%',
+    width: '100%',
+    height: '100%',
     alignSelf: 'center',
     resizeMode: 'contain',
+  },
+  bottomImage: {
+    height: 70,
+    width: 70,
+    margin: 2,
+    resizeMod: 'center',
+  },
+  imageNum: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'right',
+    right: 5,
+    top: 3,
+    textShadowRadius: 2,
+    elevation: 3,
+    shadowOpacity: 1,
+    shadowColor: '#000000',
+    textShadowOffset: {width: 1.5, height: 2.5},
+  },
+  noImage: {
+    color: '#000000',
+    fontSize: 30,
+    alignSelf: 'center',
+    textAlignVertical: 'center',
   },
 });

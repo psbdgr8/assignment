@@ -1,4 +1,5 @@
 
+import 'react-native-gesture-handler';
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -11,7 +12,7 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Image'>
+      <Stack.Navigator initialRouteName='Home'>
         <Stack.Screen
           name="Home"
           component={HomeScreen}

@@ -1,3 +1,4 @@
+
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -24,6 +25,9 @@ const App = () => {
         component={Images}/>
         <Stack.Screen
         name='Unity'
+        options={{
+    headerShown:false
+        }}
         component={Unity}/>
       </Stack.Navigator>
     </NavigationContainer>

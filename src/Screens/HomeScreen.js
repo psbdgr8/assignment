@@ -1,8 +1,10 @@
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {launchImageLibrary} from 'react-native-image-picker';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const [image, setImage] = useState({});
 
   const chooseImage = useCallback(() => {
@@ -28,10 +30,13 @@ const HomeScreen = () => {
       }
     });
   }, []);
+  function Unity(){
+navigation.navigate('Unity');
+  }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={Unity} style={styles.button}>
         <Text style={styles.text}>Launch Unity</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={chooseImage} style={styles.button}>

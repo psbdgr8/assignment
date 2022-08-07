@@ -29,17 +29,16 @@ const HomeScreen = () => {
     mediaType:'photo',
     includeBase64: true
   }).then(response => {
-    console.log('Response',response);
     response.map(image => {
       imageList.push({
         filename: image.filename,
         path: image.path,
         data: image.data
       })
+      setImage(imageList)
     })
   }).catch(e => console.log("Error",e.message)); 
  };
-
 
 if(visible){
   return(

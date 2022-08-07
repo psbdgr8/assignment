@@ -1,5 +1,5 @@
 import {
-  FlatList,
+  Image,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -18,9 +18,14 @@ const Images = () => {
   }
   return (
     <View style={styles.container}>
-    <StatusBar barStyle={'dark-content'}/>
-      <View>
-        <Text>sample</Text>
+    <StatusBar barStyle={'dark-content'} />
+      <View style={{flex:0.8, marginTop: 50}}>
+      <Image
+        style={styles.tinyLogo}
+        source={{
+          uri: 'https://reactnative.dev/img/tiny_logo.png',
+        }}
+      />
       </View>
       <View style={styles.topIconView}>
         <TouchableOpacity onPress={Home}>
@@ -143,5 +148,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     alignSelf: 'flex-start',
     flexDirection: 'row',
+  },
+  tinyLogo: {
+    width: "90%",
+    height: "90%",
+    alignSelf:'center',
+    resizeMode:'contain'
   },
 });

@@ -33,9 +33,7 @@ const HomeScreen = () => {
   }).then(response => {
     response.map(image => {
       imageList.push({
-        filename: image.filename,
         path: image.path,
-        data: image.data
       })
       setImage(imageList)
     })

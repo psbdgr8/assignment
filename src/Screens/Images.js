@@ -14,6 +14,7 @@ import {Icon} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const Images = ({route}) => {
   const navigation = useNavigation();
@@ -21,7 +22,7 @@ const Images = ({route}) => {
   if(imageList.imageList.length > 30){
     imageList.imageList.splice(30, imageList.imageList.length );
   }
-  const [image, setImage] =useState(imageList)
+  const [image1, setImage] =useState(imageList)
   const [index, setIndex] = useState(0);
   const [refresh, setRefresh] = useState(false);
 
@@ -31,24 +32,24 @@ const Images = ({route}) => {
 
   function Delete() {
     setRefresh(prevRefresh => !prevRefresh);
-    if (index > 1) {
-      image.imageList.splice(index, index + 1);
-      setIndex(index - 1);
-    } else if (index === 0 && image.imageList.length > 1) {
-      image.imageList.splice(index, index + 1);
+    if (index > 0) {
+      image1.imageList.splice(index, 1);
+      setIndex(index-1);
+    }
+    else if (index === 0 && image1.imageList.length > 1) {
+      image1.imageList.splice(index, 1);
       setIndex(index);
     }
-    else if (image.imageList.length === 1) {
+    else if (index === 0 && image1.imageList.length === 1) {
+      image1.imageList.splice(index, 1);
+      setIndex(index-1);
+    }
+    else if (image1.imageList.length === 0) {
       Alert.alert(
-        'Last Picture',
-        'If you delete it,\nIt will take you to the Home',
+        'No Images',
+        'Please add some Images',
         [
-          {
-            text: 'No',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          {text: 'Yes', onPress: Home},
+          {text: 'ok', onPress: null},
         ],
         {
           cancelable: true,
@@ -57,10 +58,29 @@ const Images = ({route}) => {
       );
     }
   }
-
-  function refresher() {
-    setRefresh(prevRefresh => !prevRefresh);
+  function AddNew(){
+  let NewList = [];
+  ImagePicker.openPicker({
+    multiple: true,
+    waitAnimationEnd: false,
+    includeExif: true,
+    forceJpg: true,
+    compressImageQuality: 0.8,
+    maxFiles: 30,
+    mediaType:'photo',
+    includeBase64: true
+  }).then(response => {
+    response.map(image => {
+      image1.imageList.splice(index+1, 0, {
+        path: image.path,
+      })
+      console.log(imageList)
+      setRefresh(1)
+    })
+  })
+  setRefresh(prevRefresh => !prevRefresh);
   }
+
 
   return (
     <View style={styles.container}>
@@ -70,11 +90,11 @@ const Images = ({route}) => {
           <Image
             style={styles.mainImage}
             source={{
-              uri: image.imageList[index].path,
+              uri: image1.imageList[index].path,
             }}
           />
         ) : (
-          <Text style={styles.noImage}>No Image</Text>
+          <Text style={styles.noImage}>No Image, please add {'\n'} some images to continue.</Text>
         )}
       </View>
       <View style={styles.topIconView}>
@@ -91,9 +111,9 @@ const Images = ({route}) => {
       </View>
       <View style={styles.bottom}>
         <View style={styles.bottomBar}>
-          <Icon name="add-circle" iconStyle={styles.bottomIcon} />
+          <Icon name="add-circle" onPress={AddNew} iconStyle={styles.bottomIcon} />
           <View style={styles.textField}>
-            {index > -1 ? (
+            {index >= 0 ? (
               <Text style={styles.text}>Image{index + 1}</Text>
             ) : (
               <Text style={styles.text}>No Image</Text>
@@ -107,7 +127,7 @@ const Images = ({route}) => {
               alwaysBounceHorizontal
               horizontal
               extraData={refresh}
-              data={image.imageList}
+              data={image1.imageList}
 
               renderItem={({item, index, drag}) => (
                 <TouchableOpacity
@@ -220,5 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     alignSelf: 'center',
     textAlignVertical: 'center',
+    textAlign:'center',
+    margin: 20
   },
 });
